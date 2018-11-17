@@ -3,10 +3,14 @@ package hello;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
+@RestController
 public class PriceController {
 
-    final PriceService priceService;
+    final private PriceService priceService;
 
     @Autowired
     public PriceController(final PriceService priceService) {
@@ -15,10 +19,8 @@ public class PriceController {
 
     ///TODO: add version one prefix.
     @RequestMapping("/cost")
-    public Greeting greeting(@RequestParam() Double startLat, @RequestParam() Double startLag,
-                             @RequestParam() Double endLat, @RequestParam() Double endLag) {
-        priceService.calculatePrice(new Position(startLat, startLag, endLat, endLag));
-        //TODO: transform dto object. 
-        return null;
+    public List<AfterTaxiPrice> greeting(@RequestParam() Double startLat, @RequestParam() Double startLag,
+                                         @RequestParam() Double endLat, @RequestParam() Double endLag) {
+        return priceService.calculatePrice(new Position(startLat, startLag, endLat, endLag));
     }
 }

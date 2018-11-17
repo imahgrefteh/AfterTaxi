@@ -8,6 +8,7 @@ import java.util.List;
 
 @Service
 public class PriceService {
+    private static final int DISCOUNT_PERCENTAGE = 25;
     private final PriceRepository priceRepository;
 
     @Autowired
@@ -16,10 +17,9 @@ public class PriceService {
     }
 
 
-    public List<CostResponse> calculatePrice(final Position postion) {
-        List<CostResponse> costs = priceRepository.requestPrice(postion);
-
-        return null;
+    public List<AfterTaxiPrice> calculatePrice(final Position postion) {
+        Cost cost = priceRepository.requestPrice(postion);
+        return setAfterTaxiPrice(DISCOUNT_PERCENTAGE, cost.getCostEstimates());
     }
 
     //TODO: make private 
