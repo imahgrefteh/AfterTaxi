@@ -1,32 +1,28 @@
 package hello;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import configuration.MuleSoftRestTemplateConfiguration;
 
 //TOOD: add generic call out.
-@Component
+@Repository
 public class PriceRepository {
     private static final String url = Constants.URL;
-    // TODO: figure out what I will need to do about this. 
-
-    //    private RestTemplate restTemplate;
-    private RestTemplateBuilder restTemplateBuilder;
+    private RestTemplate restTemplate;
 
     @Autowired
-    public PriceRepository(RestTemplateBuilder restTemplateBuilder) {
-        this.restTemplateBuilder = restTemplateBuilder;
-    }
-
-    @Autowired
-    public RestTemplate restTemplate(RestTemplateBuilder builder) {
-        return builder.build();
+    public PriceRepository(@Qualifier("muleSoftRestTemplate")
+                                       RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 
     public Cost requestPrice(final Position position) {
@@ -38,11 +34,11 @@ public class PriceRepository {
                 .queryParam("start_lng", position.getStartLag())
                 .queryParam("end_lat", position.getEndLat())
                 .queryParam("end_lng", position.getEndLag());
-        
-        System.out.println("sfsdf ::: "+builder.toUriString());
+
+        System.out.println(builder.toString());
+        System.out.println("sfsdf ::: " + builder.toUriString());
 
         HttpEntity<?> entity = new HttpEntity<>(headers);
-        RestTemplate restTemplate = restTemplate(restTemplateBuilder);
         HttpEntity<Cost> response = restTemplate.exchange(
                 builder.toUriString(),
                 HttpMethod.GET,
