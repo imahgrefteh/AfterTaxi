@@ -2,26 +2,23 @@ package hello;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import configuration.MuleSoftRestTemplateConfiguration;
 
 //TOOD: add generic call out.
-@Repository
+@Component
 public class PriceRepository {
     private static final String url = Constants.URL;
+
     private RestTemplate restTemplate;
 
     @Autowired
-    public PriceRepository(@Qualifier("muleSoftRestTemplate")
-                                       RestTemplate restTemplate) {
+    public PriceRepository(@Qualifier("twitterRestTemplate") RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
@@ -39,6 +36,7 @@ public class PriceRepository {
         System.out.println("sfsdf ::: " + builder.toUriString());
 
         HttpEntity<?> entity = new HttpEntity<>(headers);
+        // RestTemplate restTemplate = restTemplate();
         HttpEntity<Cost> response = restTemplate.exchange(
                 builder.toUriString(),
                 HttpMethod.GET,
@@ -46,4 +44,5 @@ public class PriceRepository {
                 Cost.class);
         return response.getBody();
     }
+
 }
